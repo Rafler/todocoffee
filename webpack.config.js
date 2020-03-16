@@ -21,7 +21,7 @@ module.exports = {
     ]
   },
   entry: {
-    bundle:['./src/coffee/TodosList.coffee', './src/coffee/TodoServices.coffee'],
+    bundle:['./src/components/TodosList.coffee', './src/services/TodoServices.coffee', './src/components/Footer.coffee'],
   },
   resolve: {
     extensions: [".web.coffee", ".web.js", ".coffee", ".js"]

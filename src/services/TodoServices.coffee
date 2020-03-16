@@ -5,31 +5,35 @@ define './TodoServices',
     constructor: () ->
       @todos = []
       @list = document.getElementById('list')
-      @mode = 'active'
+      @mode = 'all'
+
+    createTodo:(todo) ->
+      todoDestroyButton = document.createElement("button")
+      todoDestroyButton.className = "destroy"
+
+      todoLabel = document.createElement("label")
+      todoLabel.textContent = todo.text
+
+      checkbox = document.createElement("input")
+      checkbox.className = "toggle"
+      checkbox.type = "checkbox"
+      checkbox.checked = todo.complete
+
+      newTodo = document.createElement('li')
+      newTodo.id = todo.id
+      newTodo.className = if todo.complete then "completed" else ""
+      newTodo.append(checkbox, todoLabel, todoDestroyButton)
+
+      @list.appendChild(newTodo)
 
     addTodo: (todoText) ->
       todo =
         id: "f#{(~~(Math.random()*1e8)).toString(16)}",
         text: todoText.value,
-        complete: false,
+        complete: false
 
       if @mode != 'completed'
-        todoDestroyButton = document.createElement("button")
-        todoDestroyButton.className = "destroy"
-
-        todoLabel = document.createElement("label")
-        todoLabel.textContent = todo.text
-
-        checkbox = document.createElement("input")
-        checkbox.className = "toggle"
-        checkbox.type = "checkbox"
-        checkbox.checked = todo.complete
-
-        newTodo = document.createElement('li')
-        newTodo.id = todo.id
-        newTodo.append(checkbox, todoLabel, todoDestroyButton)
-
-        @list.appendChild(newTodo)
+        @createTodo(todo)
 
       @todos.push(todo)
 
@@ -37,23 +41,7 @@ define './TodoServices',
       @list.removeChild(@list.firstChild) while @list.firstChild
 
       for todo in todos
-        todoDestroyButton = document.createElement("button")
-        todoDestroyButton.className = "destroy"
-
-        todoLabel = document.createElement("label")
-        todoLabel.textContent = todo.text
-
-        checkbox = document.createElement("input")
-        checkbox.className = "toggle"
-        checkbox.type = "checkbox"
-        checkbox.checked = todo.complete
-
-        newTodo = document.createElement('li')
-        newTodo.id = todo.id
-        newTodo.className = if todo.complete then "completed" else ""
-        newTodo.append(checkbox, todoLabel, todoDestroyButton)
-
-        @list.appendChild(newTodo)
+        @createTodo(todo)
 
     delete: (id) ->
       todo = document.getElementById(id)
@@ -75,8 +63,7 @@ define './TodoServices',
         else
           el
 
-      if @mode != 'all'
-        @filter(@mode, @todos)
+      if @mode != 'all' then @filter(@mode, @todos)
 
     filter: (type) ->
       @mode = type
