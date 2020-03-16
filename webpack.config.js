@@ -9,10 +9,22 @@ module.exports = {
     rules: [    {
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
-    }],
+    },
+      {
+        test: /\.coffee$/,
+        use: [
+          {
+            loader: 'coffee-loader',
+          }
+        ]
+      }
+    ]
   },
   entry: {
-    bundle:['./src/js/TodosList.js', './src/js/TodoServices.js'],
+    bundle:['./src/coffee/TodosList.coffee', './src/coffee/TodoServices.coffee'],
+  },
+  resolve: {
+    extensions: [".web.coffee", ".web.js", ".coffee", ".js"]
   },
   output: {
     filename: '[name].js',
