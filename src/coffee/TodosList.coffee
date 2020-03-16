@@ -1,12 +1,13 @@
 define './TodosList',
 [
   './TodoServices'
+  '../css/base.css'
+  '../css/index.css'
 ],
 (TodoServices) ->
   class TodosList extends TodoServices
     constructor: () ->
       super()
-      @todos = []
       @mode = 'default'
       @input = document.getElementById('new-todo')
       @completeAllButton = document.getElementById('toggle-all')
@@ -23,33 +24,24 @@ define './TodosList',
         (event) ->
           if event.target.type == 'checkbox'
             id = event.target.parentElement.id
-            console.log(id)
-            res = self.complete(id, self.todos)
-            self.todos = res
+            self.complete(id)
       )
       @list.addEventListener('click',
         (event) ->
           if event.target.className == "destroy"
             id = event.target.parentElement.id
-            console.log(id)
-            res = self.delete(id, self.todos)
-            self.todos = res
+            self.delete(id)
       )
       @completeAllButton.onclick = (e) ->
-        res = self.completeAll(self.todos)
-        self.todos = res
+        self.completeAll(self.todos)
 
       @input.onkeypress = (e) ->
         if e.keyCode == 13
-          res = self.addTodo(e.target)
-          self.todos.push(res)
-          console.log(self.todos)
+          self.addTodo(e.target)
           self.input.value = ''
 
       @clearButton.onclick = (e) ->
-        res = self.clearCompleted(self.todos)
-        self.todos = res
-        console.log(self.todos)
+        self.clearCompleted(self.todos)
 
       @activeFilter.onclick = (e) ->
         self.filter('active', self.todos)

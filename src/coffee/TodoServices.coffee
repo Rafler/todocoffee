@@ -3,6 +3,7 @@ define './TodoServices',
 () ->
   class TodoServices
     constructor: () ->
+      @todos = []
       @list = document.getElementById('list')
       @mode = 'active'
 
@@ -30,7 +31,7 @@ define './TodoServices',
 
         @list.appendChild(newTodo)
 
-      return todo
+      @todos.push(todo)
 
     render: (todos) ->
       @list.removeChild(@list.firstChild) while @list.firstChild
@@ -52,23 +53,21 @@ define './TodoServices',
         newTodo.className = if todo.complete then "completed" else ""
         newTodo.append(checkbox, todoLabel, todoDestroyButton)
 
-        list.appendChild(newTodo)
+        @list.appendChild(newTodo)
 
-    delete: (id, todos) ->
+    delete: (id) ->
       todo = document.getElementById(id)
       @list.removeChild(todo)
 
-      res = for el in todos
+      @todos = for el in @todos
         if id != el.id
           el
         else
 
-      return res
-
-    complete: (id, todos) ->
+    complete: (id) ->
       todo = document.getElementById(id)
 
-      res = for el in todos
+      @todos = for el in @todos
         if id == el.id
           todo.children[0].checked = !el.complete
           todo.className = if !el.complete then "completed" else ""
@@ -77,31 +76,29 @@ define './TodoServices',
           el
 
       if @mode != 'all'
-        @filter(@mode, res)
+        @filter(@mode, @todos)
 
-      return res
-
-    filter: (type, todos) ->
+    filter: (type) ->
       @mode = type
-
       switch  type
         when 'all'
-          @render(todos)
+          @render(@todos)
+
         when 'completed'
-          res = for todo in todos
+          res = for todo in @todos
             if todo.complete
               todo
             else
           @render(res)
         when 'active'
-          res = for todo in todos
+          res = for todo in @todos
             if !todo.complete
               todo
             else
           @render(res)
 
-    completeAll: (todos) ->
-      res = for todo in todos
+    completeAll: () ->
+      @todos = for todo in @todos
         if not todo.complete and document.getElementById(todo.id)
           el = document.getElementById(todo.id)
           el.children[0].checked = !el.complete
@@ -110,21 +107,19 @@ define './TodoServices',
         else
           todo
 
-      if @mode == "active" then @filter(@mode, res)
+      if @mode == "active" then @filter(@mode, @todos)
 
-      return res
-
-    clearCompleted: (todos) ->
+    clearCompleted: () ->
       res = []
-
-      for todo in todos
+      for todo in @todos
         if not todo.complete
           res.push(todo)
         else if document.getElementById(todo.id)
           el = document.getElementById(todo.id)
           @list.removeChild(el)
+      @todos = res
 
-      return res
+
 
 
 
