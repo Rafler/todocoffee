@@ -1,7 +1,6 @@
 define './TodosList',
 [
   '../services/TodoServices'
-  '../css/base.css'
   '../css/index.css'
 ],
 (TodoServices) ->
@@ -9,27 +8,38 @@ define './TodosList',
     constructor: () ->
       super()
       @input = document.getElementById('new-todo')
+
       @completeAllButton = document.getElementById('toggle-all')
+
       @initialiseEventListener()
 
     initialiseEventListener: () ->
       self = @
+
       @list.addEventListener('change',
         (event) ->
-          if event.target.type == 'checkbox'
+          eventTarget = event.target
+
+          if eventTarget.type == 'checkbox'
             id = event.target.parentElement.id
-            self.complete(id)
+
+            if id then self.complete(id)
       )
       @list.addEventListener('click',
         (event) ->
-          if event.target.className == "destroy"
+          eventTarget = event.target
+
+          if eventTarget.className == "destroy"
             id = event.target.parentElement.id
-            self.delete(id)
+
+            if id then self.delete(id)
       )
-      @completeAllButton.onclick = (e) -> self.completeAll(self.todos)
+      @completeAllButton.onclick = () -> self.completeAll(self.todos)
 
       @input.onkeypress = (e) ->
-        if e.keyCode == 13
+        enterCode = 13
+
+        if e.keyCode == enterCode
           self.addTodo(e.target)
           self.input.value = ''
 

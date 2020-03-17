@@ -2,6 +2,10 @@
   "private": true,
   "name": "TodoCoffeee",
   "version": "1.0.0",
+  "dependencies": {
+    "todomvc-common": "^1.0.1",
+    "todomvc-app-css": "^2.0.1"
+  },
   "devDependencies": {
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.5.1",
