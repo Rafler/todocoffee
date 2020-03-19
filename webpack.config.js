@@ -4,6 +4,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: "development",
+  devServer: {
+    port: 9000,
+    host: 'localhost',
+    open: true,
+    transportMode: 'ws',
+  },
   module: {
     rules: [    {
       test: /\.css$/,

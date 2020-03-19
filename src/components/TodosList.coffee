@@ -11,9 +11,9 @@ define './TodosList',
 
       @completeAllButton = document.getElementById('toggle-all')
 
-      @initialiseEventListener()
+      @_initialiseEventListener()
 
-    initialiseEventListener: () ->
+    _initialiseEventListener: () ->
       self = @
 
       @list.addEventListener('change',

@@ -13,29 +13,29 @@ define './Footer',
 
       @completedFilter = document.getElementById('completedTodos')
 
-      @initEventListener()
+      @_initEventListener()
 
-    resetFiltersClasses:(e) ->
+    _resetFiltersClasses:(e) ->
       @allFilter.classList.remove('selected')
       @completedFilter.classList.remove('selected')
       @activeFilter.classList.remove('selected')
       e.target.classList.add('selected')
 
-    initEventListener: () ->
+    _initEventListener: () ->
       self = @
 
       @clearButton.onclick = () -> self.clearCompleted(self.todos)
 
       @activeFilter.onclick = (e) ->
         self.filter('active', self.todos)
-        self.resetFiltersClasses(e)
+        self._resetFiltersClasses(e)
 
       @allFilter.onclick = (e) ->
         self.filter('all', self.todos)
-        self.resetFiltersClasses(e)
+        self._resetFiltersClasses(e)
 
       @completedFilter.onclick = (e) ->
         self.filter('completed', self.todos)
-        self.resetFiltersClasses(e)
+        self._resetFiltersClasses(e)
 
   footer = new Footer
