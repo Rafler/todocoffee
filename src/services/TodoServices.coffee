@@ -4,30 +4,26 @@ define [],
     constructor: () ->
       @todos = []
       @list = document.getElementById('app-list')
-      @queue = []
+      @queue = null
       @connected = false
       @mode = 'all'
       self = @
 
       @_initialiseListener(self)
 
-      if window.navigator.onLine then @_initializeWS(self)
+      if window.navigator.onLine then @_initializeBC(self)
 
-    _initializeWS: (self) ->
-      path = 'wss://connect.websocket.in/v2/10?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjA1MGVmZTgzMzg5MGFlODg5ZDRhZWJmYjIyYWM3ODQ3NDljNGE2OWZmYTRlOTk0NWRkZDljMjMzODUyMjM5NGNlNTUzMDNmYjc1NDIxMWFmIn0.eyJhdWQiOiI4IiwianRpIjoiMDUwZWZlODMzODkwYWU4ODlkNGFlYmZiMjJhYzc4NDc0OWM0YTY5ZmZhNGU5OTQ1ZGRkOWMyMzM4NTIyMzk0Y2U1NTMwM2ZiNzU0MjExYWYiLCJpYXQiOjE1ODQ2MzQwNDMsIm5iZiI6MTU4NDYzNDA0MywiZXhwIjoxNjE2MTcwMDQzLCJzdWIiOiI3MDAiLCJzY29wZXMiOltdfQ.ugNIILM_sjSAbx7EK9PujMNtGNqGH74_f3cwdVmVMYMcH9Z81yy3YhhP5HrRVrkFoJ_V4XmmtM0nexqjzS8YXui8jeVFatM8rW5PwkPWzdVdU4eaCLQPz7y0e4o-f_yxvZcAk-Ek1fEChbJlJmGqLPztLnK7wXpvu90XPXdauUYRro0lVhvtYPHr6NdiOfzMw7MZDsZR2XGISKNCKoo-jY-kRQcNe0sOlRfDfQokYyWZJo4xdwidmnpwthK8RWzHrOCnn91K-RAPH9eCVnjbd97eWfJbAeNKg_5JW1L62pzRthjswiIHJ9R3IeOR4tkDUnluzngtRqABwPSjHRzFb6mj_7UevIpJ9U8AgIO6ngj8EGF0vJDE0tAQ7-tkOtUgn4ByghGagjjThX9eSLNMMgTZ0Ul1izLXZ2kwzYNCxx7EBP6o1jqrw-D4s-sUKtvomc8ZVLsa-Utp-42taAnQHnk_FFgG7lTnqTn6Jl71AM5m3agUAR46wj6-hDOKGJnI2-rlga0CmSOc77WZKlJFa4MMF-HA2ftp_C4pX-NB6zlhz8wIBFecWPDDrmP0bDZoyI-Jl7H7enkqo_kzWO8vH7XWO1pCFdR5k9J-0Ioj4UxrcK6-jDZzVgLyHy3WvMC5ihb9OBsgjlwvas35R9ncT72f2PnqR0GREnV0X-_h_Tc'
+    _initializeBC: (self) ->
+      @bc  = new BroadcastChannel('test_channel');
+      @connected = true
 
-      @ws = new WebSocket path
+      if @queue
+        @bc.postMessage(@queue)
+        @queue = null
 
-      @ws.onmessage = (e) -> self._getMessage(e)
+      @bc.onmessage = (e) -> self._getMessage(e)
 
-      @ws.onopen = () ->
-        self.connected = true
-
-        if self.queue.length > 0
-          for message in self.queue
-            @ws.send(message)
-
-      @ws.onclose = () -> self.connected = false
+      @bc.onmessageerror = () -> self.connected = false
 
     _getMessage: (event) ->
       message = JSON.parse(event.data)
@@ -49,11 +45,12 @@ define [],
 
     _sentTodos: () ->
       message = @_createMessage('todos', @todos)
+      console.log(@connected)
 
       if @connected
-        @ws.send(message)
+        @bc.postMessage(message)
       else
-        @queue.push(message)
+        @queue = message
 
     _generateId: () ->
       id = "f#{(~~(Math.random()*1e8)).toString(16)}"
@@ -195,4 +192,4 @@ define [],
       @_sentTodos()
 
     _initialiseListener: (self) ->
-      window.addEventListener("online",  () -> self._initializeWS(self))
+      window.addEventListener("online",  () -> self._initializeBC(self))
