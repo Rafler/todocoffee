@@ -7,33 +7,25 @@ define './TodosList',
   class TodosList extends TodoServices
     constructor: () ->
       super()
-      @input = document.getElementById('new-todo')
 
-      @completeAllButton = document.getElementById('toggle-all')
+      @input = document.getElementById('app-new-todo')
+      @completeAllButton = document.getElementById('app-toggle-all')
 
       @_initialiseEventListener()
+
+    _eventHandler: (target) ->
+      id = target.parentElement.id
+
+      if target.className == "destroy"
+        @delete(id)
+      else if target.className == "toggle"
+        @complete(id)
 
     _initialiseEventListener: () ->
       self = @
 
-      @list.addEventListener('change',
-        (event) ->
-          eventTarget = event.target
+      @list.addEventListener('click',(e) -> self._eventHandler(e.target))
 
-          if eventTarget.type == 'checkbox'
-            id = event.target.parentElement.id
-
-            if id then self.complete(id)
-      )
-      @list.addEventListener('click',
-        (event) ->
-          eventTarget = event.target
-
-          if eventTarget.className == "destroy"
-            id = event.target.parentElement.id
-
-            if id then self.delete(id)
-      )
       @completeAllButton.onclick = () -> self.completeAll(self.todos)
 
       @input.onkeypress = (e) ->
@@ -42,8 +34,3 @@ define './TodosList',
         if e.keyCode == enterCode
           self.addTodo(e.target)
           self.input.value = ''
-
-
-
-
-

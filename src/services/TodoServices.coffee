@@ -1,18 +1,12 @@
-define './TodoServices',
-[],
+define [],
 () ->
   class TodoServices
     constructor: () ->
       @todos = []
-
-      @list = document.getElementById('list')
-
+      @list = document.getElementById('app-list')
       @queue = []
-
       @connected = false
-
       @mode = 'all'
-
       self = @
 
       @_initialiseListener(self)
@@ -28,21 +22,20 @@ define './TodoServices',
 
       @ws.onopen = () ->
         self.connected = true
+
         if self.queue.length > 0
           for message in self.queue
             @ws.send(message)
 
-      @ws.onclose = () ->
-        self.connected = false
-        console.log(self.connected)
+      @ws.onclose = () -> self.connected = false
 
     _getMessage: (event) ->
       message = JSON.parse(event.data)
 
       if message.type == 'todos'
         todos = message.data
-
         @todos = todos
+
         @filter(@mode)
       else
         alert('Not correct message type')
@@ -88,6 +81,15 @@ define './TodoServices',
 
       @list.appendChild(newTodo)
 
+    _checkBoxHandleClick: (element, todo, value) ->
+      element.children[0].checked = value
+      element.classList.toggle('completed')
+
+      checkedTodo = {todo..., complete: value}
+
+      return checkedTodo
+
+
     addTodo: (todoText) ->
       id  = @_generateId()
 
@@ -122,18 +124,16 @@ define './TodoServices',
       @_sentTodos()
 
     complete: (id) ->
-      todo = document.getElementById(id)
+      el = document.getElementById(id)
       res = []
 
-      for el in @todos
-        if id == el.id
-          todo.children[0].checked = !el.complete
-          todo.classList.toggle('completed')
-          checkedTodo = {el..., complete: !el.complete}
+      for todo in @todos
+        if id == todo.id
+          checkedTodo =  @_checkBoxHandleClick(el, todo, !todo.complete)
 
           res.push(checkedTodo)
         else
-          res.push(el)
+          res.push(todo)
 
       @todos = res
       @_sentTodos()
@@ -143,7 +143,7 @@ define './TodoServices',
     filter: (type) ->
       @mode = type
 
-      switch  type
+      switch type
         when 'all'
           @_render(@todos)
 
@@ -167,13 +167,12 @@ define './TodoServices',
 
     completeAll: () ->
       res = []
+
       for todo in @todos
         el = document.getElementById(todo.id)
 
-        unless todo.complete and el
-          el.children[0].checked = !el.complete
-          el.classList.toggle('completed')
-          checkedTodo = {todo..., complete: !todo.complete}
+        if not todo.complete and el
+          checkedTodo =  @_checkBoxHandleClick(el, todo, !todo.complete)
 
           res.push(checkedTodo)
         else
@@ -190,10 +189,7 @@ define './TodoServices',
       for todo in @todos
         el = document.getElementById(todo.id)
 
-        unless todo.complete
-          res.push(todo)
-        else if el
-          @list.removeChild(el)
+        if el then @list.removeChild(el) else res.push(todo)
 
       @todos = res
       @_sentTodos()
