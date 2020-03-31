@@ -1,0 +1,4 @@
+--require coffeescript/register
+test
+--recursive
+

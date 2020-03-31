@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo</title>
+</head>
+<body>
+<div class="todoapp">
+    <header class="header">
+        <h1>todos</h1>
+        <input class="new-todo" placeholder="What needs to be done?" autofocus id="app-new-todo">
+    </header>
+    <section class="main">
+        <input id="app-toggle-all" class="toggle-all" type="checkbox">
+        <label for="app-toggle-all">Mark all as complete</label>
+        <ul class="todo-list" id="app-list"></ul>
+    </section>
+    <footer class="footer">
+        <span class="todo-count"></span>
+        <ul class="filters">
+            <li>
+                <a href="#/" class="selected" id="app-allTodos">All</a>
+            </li>
+            <li>
+                <a href="#/active" id="app-activeTodos">Active</a>
+            </li>
+            <li>
+                <a href="#/completed" id="app-completedTodos">Completed</a>
+            </li>
+        </ul>
+        <button class="clear-completed" id="app-clear-completed">Clear completed</button>
+    </footer>
+</div>
+</body>
+</html>

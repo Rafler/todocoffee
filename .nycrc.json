@@ -1,0 +1,7 @@
+{
+  "extension": [
+    ".coffee"
+  ],
+  "reporter": ["text", "text-summary"],
+  "report-dir": "./coverage"
+}
